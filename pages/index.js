@@ -1,12 +1,39 @@
 import { useState } from "react";
 
-const [context, setContext] = useState("");
-const [goal, setGoal] = useState("");
-const [tone, setTone] = useState("Professional");
-const [result, setResult] = useState("");
-const [loading, setLoading] = useState(false);
-
 export default function Home() {
+  const [context, setContext] = useState("");
+  const [goal, setGoal] = useState("");
+  const [tone, setTone] = useState("Professional");
+  const [result, setResult] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const handleGenerate = async () => {
+    setLoading(true);
+    setResult("");
+
+    try {
+      const response = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ context, goal, tone }),
+      });
+
+      const data = await response.json();
+      setResult(data.email || "No response generated.");
+    } catch (err) {
+      console.error(err);
+      setResult("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleCopy = () => {
+    navigator.clipboard.writeText(result);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-6 flex items-center justify-center">
       <div className="bg-white p-8 rounded-xl shadow-md max-w-3xl w-full">
@@ -47,9 +74,25 @@ export default function Home() {
           <option value="Bold">Bold</option>
         </select>
 
-        <button className="w-full bg-blue-600 text-white py-3 rounded hover:bg-blue-700 transition-colors mb-4">
-          Generate Email
+        <button
+          className="w-full bg-blue-600 text-white py-3 rounded hover:bg-blue-700 transition-colors mb-4"
+          onClick={handleGenerate}
+          disabled={loading}
+        >
+          {loading ? "Generating..." : "Generate Email"}
         </button>
+        {result && (
+          <div className="mt-4 p-4 bg-gray-50 border border-gray-300 rounded">
+            <h2 className="font-semibold mb-2">Generated Email:</h2>
+            <pre className="whitespace-pre-wrap text-gray-800">{result}</pre>
+            <button
+              onClick={handleCopy}
+              className="mt-3 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+            >
+              {copied ? "Copied!" : "📋 Copy to Clipboard"}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
