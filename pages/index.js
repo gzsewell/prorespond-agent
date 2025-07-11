@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Link from "next/link";
+import Navbar from "../components/navbar";
 
 export default function Home() {
   const [context, setContext] = useState("");
@@ -22,6 +23,7 @@ export default function Home() {
 
       const data = await response.json();
       setResult(data.email || "No response generated.");
+
       await fetch("/api/save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -51,25 +53,11 @@ export default function Home() {
 
   return (
     <div className="relative min-h-screen bg-gray-50">
-      {/* Link + Main content goes here */}
-
+      <Navbar />
       <div className="min-h-screen bg-gray-100 p-6 flex items-center justify-center">
         <div className="bg-white p-8 rounded-xl shadow-md max-w-3xl w-full">
-          <h1 className="text-3xl font-bold text-center mb-4">
-            ProRespond Agent
-          </h1>
-          <Link
-            href="/"
-            className="absolute top-4 right-4 text-blue-600 underline hover:text-blue-800"
-          >
-            ⬅️ Back to Home
-          </Link>
-          <Link
-            href="/history"
-            className="absolute top-4 right-4 text-blue-600 underline hover:text-blue-800"
-          >
-            📜 Email History
-          </Link>
+          <h1 className="text-3xl font-bold text-center mb-4">Respond Agent</h1>
+          <div className="absolute top-4 right-4 flex space-x-4"></div>
 
           <p className="text-center text-gray-600 mb-6">
             Generate personalized emails for outreach, job apps, and more.
@@ -108,6 +96,11 @@ export default function Home() {
           >
             {loading ? "Generating..." : "Generate Email"}
           </button>
+          {loading && (
+            <div className="text-center mt-4 text-blue-600 font-medium animate-pulse">
+              ✨ Generating your email...
+            </div>
+          )}
           {result && (
             <div className="mt-4 p-4 bg-gray-50 border border-gray-300 rounded">
               <h2 className="font-semibold mb-2">Generated Email:</h2>
