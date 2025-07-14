@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Navbar from "../components/navbar";
+import { toast } from "react-hot-toast";
 
 export default function Home() {
   const [context, setContext] = useState("");
@@ -24,14 +25,19 @@ export default function Home() {
       const data = await response.json();
       setResult(data.email || "No response generated.");
 
-      await fetch("/api/save", {
+      const saveRes = await fetch("/api/save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ context, goal, tone, result: data.email }),
       });
+      if (saveRes.ok) {
+        toast.success("Email saved to history!");
+      } else {
+        toast.error("Failed to save email.");
+      }
     } catch (err) {
-      console.error(err);
-      setResult("Something went wrong. Please try again.");
+      console.error("Error", err);
+      toString.error("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -69,12 +75,15 @@ export default function Home() {
             value={context}
             onChange={(e) => setContext(e.target.value)}
           ></textarea>
+          <p className="text-sm text-right text-gray-500">
+            {context.length}/300 characters
+          </p>
           <input
             className="w-full p-3 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
             type="text"
             placeholder="What is your goal? (e.g., Introduce yourself for a job, pitch a service)"
             value={goal}
-            onChange={(e) => setGoal(e.target.value)}
+            onChange={(e) => setGoal(e.target.value.slice(0, 300))}
           />
           <select
             className="w-full p-3 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
