@@ -18,3 +18,16 @@ export default async function handler(req, res) {
     res.status(500).json({ error: "Failed to fetch emails" });
   }
 }
+
+{
+  emails.map((email) => (
+    <div key={email.id} className="p-4 bg-white border rounded shadow relative">
+      <button
+        onClick={() => handleDelete(email.id)}
+        className="absolute top-2 right-2 text-red-600 hover:underline text-sm"
+      >
+        🗑 Delete
+      </button>
+    </div>
+  ));
+}

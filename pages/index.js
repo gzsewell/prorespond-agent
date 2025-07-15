@@ -68,23 +68,30 @@ export default function Home() {
           <p className="text-center text-gray-600 mb-6">
             Generate personalized emails for outreach, job apps, and more.
           </p>
-          <textarea
-            className="w-full p-3 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            rows={6}
-            placeholder="Paste a LinkedIn profile, job description, or other context..."
-            value={context}
-            onChange={(e) => setContext(e.target.value)}
-          ></textarea>
-          <p className="text-sm text-right text-gray-500">
-            {context.length}/300 characters
-          </p>
-          <input
-            className="w-full p-3 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            type="text"
-            placeholder="What is your goal? (e.g., Introduce yourself for a job, pitch a service)"
-            value={goal}
-            onChange={(e) => setGoal(e.target.value.slice(0, 300))}
-          />
+          <div className="relative mb-4">
+            <textarea
+              className="w-full p-3 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              rows={6}
+              placeholder="Paste a LinkedIn profile, job description, or other context..."
+              value={context}
+              onChange={(e) => setContext(e.target.value.slice(0, 300))}
+            ></textarea>
+            <span className="absolute bottom-0.7 right-3 text-xs text-gray-400">
+              {context.length}/300{" "}
+            </span>
+          </div>
+          <div className="relative mb-4">
+            <input
+              className="w-full p-3 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              type="text"
+              placeholder="What is your goal? (e.g., Introduce yourself for a job, pitch a service)"
+              value={goal}
+              onChange={(e) => setGoal(e.target.value.slice(0, 200))}
+            />
+            <span className="absolute bottom-0.7 right-3 text-xs text-gray-400">
+              {goal.length}/200{" "}
+            </span>
+          </div>
           <select
             className="w-full p-3 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={tone}
